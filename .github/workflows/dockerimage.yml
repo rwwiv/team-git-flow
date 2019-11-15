@@ -1,0 +1,19 @@
+name: Docker Image CD Test
+
+on:
+  push:
+    branches: 
+      - feature-dockerfile-publish-test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build and publish the Docker image
+      run: |
+        export VERSION=$(date +%s)
+        docker login -u ${{ secrets.GITHUB_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }}
+        docker build . --file Dockerfile --tag rwwiv/team-git-flow/docker-test:$VERSION
+        docker push docker.pkg.github.com/rwwiv/team-git-flow/docker-test:$VERSION
